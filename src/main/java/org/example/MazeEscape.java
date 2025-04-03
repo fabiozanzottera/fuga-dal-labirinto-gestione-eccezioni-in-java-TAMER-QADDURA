@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-// Eccezione personalizzata per movimenti fuori dai limiti
+// Eccezione personalizza ta per movimenti fuori dai limiti
 class OutOfBoundsException extends Exception {
     public OutOfBoundsException(String message) {
         super(message);
@@ -41,9 +41,15 @@ public class MazeEscape {
 
             try {
                 // Chiamare il metodo per muovere il giocatore
+            	movePlayer(move);
                 // Verificare se ha raggiunto l'uscita e terminare il gioco
+            	if(playerX == LABIRINTO.length-1 && playerY == LABIRINTO[0].length) {
+            		escaped = true;
+            		System.out.println("Seti arrivato all' uscita");
+            	}
             } catch (OutOfBoundsException | WallCollisionException e) {
                 // Stampare il messaggio di errore dell'eccezione
+            	e.getMessage();
             }
         }
 
@@ -57,22 +63,56 @@ public class MazeEscape {
      * - Se il movimento porta su un muro ('#') → lancia WallCollisionException
      * - Se il movimento è valido, aggiornare la posizione
      */
+    
     private static void movePlayer(char direction) throws OutOfBoundsException, WallCollisionException {
         // Dichiarare nuove variabili per la posizione dopo il movimento
+    	int newX = playerX;
+    	int newY = playerY;
         
         // Switch-case per aggiornare le nuove coordinate in base alla direzione
+    	switch(direction) {
+    	   case 'W':
+    		   newY++;
+    	       break;
+    	   case 'S':
+    		   newY--;
+    		   break;
+    	   case 'A':
+    		   newX--;
+    		   break;
+    	   case 'D':
+    		   newX++;
+    		   break;	   
+    	}
+    	
         
         // Controllare se il movimento è fuori dalla matrice e lanciare OutOfBoundsException
         
         // Controllare se il movimento porta su un muro e lanciare WallCollisionException
         
         // Aggiornare la matrice con la nuova posizione del giocatore
+    	if(newX < 0  || newX > 4 || newY < 0  || newY > 4 )
+    		throw new OutOfBoundsException("Hai provato ad uscire dal labirinto");
+    	if(LABIRINTO [newX][newY] == '#' ) 
+    		throw new WallCollisionException("Hai coplpito un muro");
+    	
+        LABIRINTO[playerX][playerY] = '.';
+        LABIRINTO[newX][newY] = 'p';
+        playerX = newX;
+        playerY = newY;
+    	    
+    		
     }
 
     /**
      * Metodo per stampare il labirinto attuale
      */
     private static void printMaze() {
-        // Stampare la matrice riga per riga
+    	for(int i = 0; i < LABIRINTO.length; i++) {
+    		for(int j = 0;  j < LABIRINTO[0].length; j++) {
+    			System.out.println(LABIRINTO[i][j]);
+    		}
+    	}
+        
     }
 }
